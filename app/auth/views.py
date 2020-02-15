@@ -3,7 +3,7 @@ from . import auth
 from flask_login import login_user, logout_user, login_required
 from ..models import User
 from .forms import LoginForm, RegistrationForm
-from .. import db
+from ..models import db
 from ..email import mail_message
 
 @auth.route('/register', methods=["GET", "POST"])
@@ -14,8 +14,7 @@ def register():
                     username=form.username.data, password=form.password.data)
         db.session.add(user)
         db.session.commit()
-        
-        mail_message("Welcome to watchlist","email/welcome_user",user.email,user=user)
+        mail_message("Welcome to Pitch","email/welcome_user",user.email,user=user)
 
         return redirect(url_for('auth.login'))
         flash('Registered successfully')
@@ -25,6 +24,7 @@ def register():
 
 @auth.route('/login', methods=["GET", "POST"])
 def login():
+    error = []
     login_form = LoginForm()
     if login_form.validate_on_submit():
         user = User.query.filter_by(email=login_form.email.data).first()

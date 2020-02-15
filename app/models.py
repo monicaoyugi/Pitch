@@ -1,4 +1,4 @@
-from . import db,login_manager
+from . import db, login_manager
 from datetime import datetime
 from werkzeug.security import generate_password_hash,check_password_hash
 from flask_login  import UserMixin
@@ -10,9 +10,7 @@ def load_user(user_id):
 
 
 class User(UserMixin,db.Model):
-    
     __tablename__ = 'users'
-    
     id = db.Column(db.Integer,primary_key = True)
     username = db.Column(db.String(255))
     email = db.Column(db.String(255), unique=True, index=True)
@@ -22,7 +20,6 @@ class User(UserMixin,db.Model):
     profile_pic_path = db.Column(db.String())
     pitches =  db.relationship('Pitch', backref = 'user', lazy = "dynamic")
     Comments = db.relationship('Comment', backref = 'user', lazy = "dynamic")
-    
     @property
     def password(self):
         raise AttributeError('You cannot read the password attribute')
@@ -34,11 +31,9 @@ class User(UserMixin,db.Model):
 
     def verify_password(self,password):
         return check_password_hash(self.password_hash,password)
-    
 
     def __repr__(self):
         return f'User {self.username}'
-    
 class Role(db.Model):
     __tablename__ = 'roles'
 
@@ -48,11 +43,8 @@ class Role(db.Model):
 
     def __repr__(self):
         return f'User {self.name}'
-    
 class Types(db.Model):
-    
     __tablename__= 'types'
-    
     id = db.Column(db.Integer, primary_key = True)
     name = db.Column(db.String(255), index = True)
     pitches = db.relationship('Pitch', backref = 'type', lazy = "dynamic")
@@ -61,7 +53,6 @@ class Types(db.Model):
     def get_categories(cls):
         types = Types.query.all()
         return types
-    
 class Pitch(db.Model):
     __tablename__ = 'pitches'
 
@@ -81,25 +72,17 @@ class Pitch(db.Model):
     def get_pitches(cls, id):
         pitches = Pitch.query.filter_by(type_id = id).all()
         return pitches
-    
     @classmethod
     def get_pitches_user(cls,id):
         pitches = Pitch.query.filter_by(user_id = id).all()
         return pitches
-        
-            
-    
-    
 class Comment(db.Model):
-    
     __tablename__ = 'comments'
-    
     id = db.Column(db.Integer, primary_key = True)
     comment_post = db.Column(db.String(255), index=True)
     time = db.Column(db.DateTime, default=datetime.utcnow)
     pitch_id = db.Column(db.Integer, db.ForeignKey('pitches.id'))
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
-    
     def save_comments(self):
         db.session.add(self)
         db.session.commit()
