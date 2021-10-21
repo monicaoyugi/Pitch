@@ -1,7 +1,7 @@
 alabaster==0.7.12
 alembic==1.4.0
 astroid==2.3.3
-Babel==2.8.0
+Babel==2.9.1
 blinker==1.4
 bootstrap-py==0.8.2
 certifi==2019.11.28
